@@ -1,0 +1,56 @@
+
+
+
+<Card>:
+    Button:
+        text:str(root.display)
+        on_press:root.update()
+
+<MemoryGame>:
+    card1: c1
+    card2: c2
+    card3: c4
+    card4: c3
+    card5: c5
+    card6: c6
+    card7: c7
+    card8: c8
+    card9: c9
+    card10: c10
+    card11: c11
+    card12: c12
+    orientation:'vertical'
+
+    Label:
+        text:'0'
+
+    BoxLayout:
+        BoxLayout:
+            Card:
+                id: c1
+            Card:
+                id: c2
+            Card:
+                id: c3
+            Card:
+                id: c4
+    BoxLayout:
+        BoxLayout:
+            Card:
+                id: c5
+            Card:
+                id: c6
+            Card:
+                id: c7
+            Card:
+                id: c8
+    BoxLayout:
+        BoxLayout:
+            Card:
+                id: c9
+            Card:
+                id: c10
+            Card:
+                id: c11
+            Card:
+                id: c12
