@@ -8,9 +8,14 @@ from kivy.clock import Clock
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from random import shuffle
+from kivy.clock import Clock
 
+opened = [0,0]
+score = [10]
 
-arr = [1,2,3,4]
+numcards = 12
+cleared = [0 for i in range(numcards+1)]
+
 
 class Card(BoxLayout):
 
@@ -19,17 +24,42 @@ class Card(BoxLayout):
     display = StringProperty('-')
 
     def update(self):
-        if self.state==0:
-            self.state = 1
-            self.display = str(self.rank)
-        else:
-            self.state = 0
-            self.display = '-'
 
+        #Already taken
+        if cleared[self.rank]==2:
+            return
+        #Two different cards currently opened
+        elif opened[0]==2 and self.state==0:
+            return
+        #This card and another different-ranked card are opened
+        elif opened[0]==2 and self.state==1:
+            self.state = 0
+            self.display = "-"
+            opened[1] -= 1
+            cleared[self.rank] -= 1
+            #Both cards closed
+            if opened[1]==0:
+                opened[0]=0
+        #This card is closed right now
+        elif self.state==0:
+            self.state = 1
+            cleared[self.rank] += 1
+            opened[0] += 1
+            opened[1] += 1
+            self.display = str(self.rank)
+            if cleared[self.rank]==2:
+                opened[0] = opened[1] = 0
+            elif opened[0]==2:
+                score[0] -= 1
+
+        #This card is the only card opened
+        else:
+            return
 
 class MemoryGame(BoxLayout):
 
-    numcards = 12
+    numcards = numcards
+    scoredisp = NumericProperty(10)
 
     card1 = ObjectProperty(None)
     card2 = ObjectProperty(None)
@@ -43,8 +73,6 @@ class MemoryGame(BoxLayout):
     card10 = ObjectProperty(None)
     card11 = ObjectProperty(None)
     card12 = ObjectProperty(None)
-
-
 
     def initialize(self):
         arr = [(i+2)//2 for i in range(self.numcards)]
@@ -62,13 +90,15 @@ class MemoryGame(BoxLayout):
         self.card11.rank = arr[10]
         self.card12.rank = arr[11]
 
-    #card4.rank = 1
+    def updatescore(self,dt):
+        self.scoredisp = score[0]
 
 
 class MemoryGameApp(App):
     def build(self):
         game = MemoryGame()
         game.initialize()
+        Clock.schedule_interval(game.updatescore,1.0/60.0)
         return game
 
 
